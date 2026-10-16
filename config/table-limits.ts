@@ -1,0 +1,17 @@
+export const tableLimits = {
+    locks: 20,
+    pads: 20,
+    knobs: 20,
+    bolts: 20,
+    peepholes: 20,
+    paints: 20,
+    ears: 20,
+    packagings: 20,
+    jambHoles: 20,
+    hinges: 20,
+    models: 20,
+    customers: 20,
+    outsideFinishes: 20,
+    insideFinishes: 20,
+    foils: 20,
+}
