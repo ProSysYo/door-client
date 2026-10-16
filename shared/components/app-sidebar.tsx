@@ -16,9 +16,9 @@ import {
 } from "./shadcn/sidebar";
 import { navItems, routes } from "@/config/navigation";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./shadcn/collapsible";
-import { Bell, ChevronRight, ChevronsUpDown, LogOut, UserRound } from "lucide-react";
+import { Bell, ChevronRight, ChevronsUpDown, UserRound } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -28,17 +28,20 @@ import {
     DropdownMenuTrigger,
 } from "./shadcn/dropdown-menu";
 import { Avatar, AvatarFallback } from "./shadcn/avatar";
+import { useSession } from "@/entities/session/session.queries";
+import { SignOutButton } from "@/features/auth/components/sign-out-button";
 
 const matchesPath = (href: string, pathname: string) =>
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
 export const AppSidebar = () => {
     const pathname = usePathname();
-    const router = useRouter();
+    const { user } = useSession();
 
     const { isMobile } = useSidebar();
 
-    //const initials = (session?.user?.email ?? "??").slice(0, 2).toUpperCase();
+    const email = user?.email ?? "";
+    const initials = email ? email.slice(0, 2).toUpperCase() : "??";
 
     // Активным считается самый специфичный (самый длинный) совпавший роут,
     // чтобы /orders/new не подсвечивал одновременно и /orders
@@ -48,14 +51,6 @@ export const AppSidebar = () => {
         return hrefs.filter((href) => matchesPath(href, pathname)).sort((a, b) => b.length - a.length)[0] ?? null;
     }, [pathname]);
 
-    const handleSignOut = async () => {
-        try {
-            //await signOut({ redirect: true });
-            router.push(routes.login);
-        } catch (error) {
-            console.log(error);
-        }
-    };
     return (
         <Sidebar collapsible="icon">
             <SidebarHeader>
@@ -156,13 +151,13 @@ export const AppSidebar = () => {
                                     <div className="relative">
                                         <Avatar className="h-8 w-8 rounded-lg">
                                             <AvatarFallback className="rounded-lg bg-linear-to-br from-zinc-600 to-zinc-900 text-xs text-white">
-                                                {/* {initials} */}
+                                                {initials}
                                             </AvatarFallback>
                                         </Avatar>
                                         <span className="absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full border-2 border-sidebar bg-emerald-500" />
                                     </div>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
-                                        {/* <span className="truncate text-xs">{session?.user?.email}</span> */}
+                                        <span className="truncate text-xs">{email}</span>
                                     </div>
                                     <ChevronsUpDown className="ml-auto size-4" />
                                 </SidebarMenuButton>
@@ -184,10 +179,7 @@ export const AppSidebar = () => {
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleSignOut}>
-                                    <LogOut />
-                                    Выйти
-                                </DropdownMenuItem>
+                                <SignOutButton />
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </SidebarMenuItem>

@@ -1,8 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { routes } from "../../config/navigation";
+import { Suspense } from "react";
 
 import { AppSidebar } from "./app-sidebar";
 import { SidebarTrigger } from "./shadcn/sidebar";
@@ -12,8 +10,6 @@ type AppShellProps = {
 };
 
 export const AppShell = ({ children }: AppShellProps) => {
-    const router = useRouter();
-
     return (
         <div className="flex h-screen bg-background text-foreground flex-1 ">
             <Suspense fallback={<div />}>
