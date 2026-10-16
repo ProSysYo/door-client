@@ -1,20 +1,26 @@
 "use client";
 
-import { useState } from "react";
-//import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, type MutableRefObject } from "react";
 import { knobFormSchema, KnobFormValues } from "../knob-schema";
 import { useCreateKnob, useUpdateKnob } from "@/entities/knobs/knobs.mutations";
 import { Button } from "@/shared/components/shadcn/button";
 import { InputField } from "@/shared/components/input-field";
+import { getApiErrorInfo } from "@/shared/api/api-error";
 import { toast } from "sonner";
 
 interface KnobFormProps {
     onSuccess?: () => void;
     editId?: number;
     initialValues?: { name?: string } | null;
+    /** Скрыть внутреннюю кнопку — используется внутри FormDialog. */
+    hideButton?: boolean;
+    /** Родитель может вызвать submit через этот ref. */
+    submitRef?: MutableRefObject<(() => void) | null>;
+    /** Экспортирует состояние isPending наружу. */
+    onPendingChange?: (pending: boolean) => void;
 }
 
-export const KnobForm = ({ onSuccess, editId, initialValues }: KnobFormProps) => {
+export const KnobForm = ({ onSuccess, editId, initialValues, hideButton, submitRef, onPendingChange }: KnobFormProps) => {
     const isEdit = !!editId;
     const createMutation = useCreateKnob();
     const updateMutation = useUpdateKnob();
@@ -49,6 +55,11 @@ export const KnobForm = ({ onSuccess, editId, initialValues }: KnobFormProps) =>
 
     const isPending = createMutation.isPending || updateMutation.isPending;
 
+    // Экспортируем isPending наружу для кнопки в футере диалога.
+    useEffect(() => {
+        onPendingChange?.(isPending);
+    }, [isPending, onPendingChange]);
+
     const handleSubmit = async () => {
         const data = validate();
         if (!data) return;
@@ -61,16 +72,29 @@ export const KnobForm = ({ onSuccess, editId, initialValues }: KnobFormProps) =>
                 await createMutation.mutateAsync(data);
                 toast.success(`Добавлена ручка: ${data.name}`);
             }
-            //setValues({ name: "" });
             onSuccess?.();
-            //router.back();
-        } catch {
-            toast.error("Ошибка при сохранении");
+        } catch (error) {
+            const { fields, message } = getApiErrorInfo(error, Object.keys(values) as (keyof KnobFormValues)[]);
+            setErrors(fields);
+            if (message) toast.error(message);
         }
     };
 
+    // Регистрируем submit в ref родителя — вызывается кнопкой в футере FormDialog.
+    const handleSubmitRef = useRef<() => Promise<void>>(handleSubmit);
+
+    useEffect(() => {
+        handleSubmitRef.current = handleSubmit;
+    });
+
+    useEffect(() => {
+        if (!submitRef) return;
+        submitRef.current = () => { void handleSubmitRef.current(); };
+        return () => { submitRef.current = null; };
+    }, [submitRef]);
+
     return (
-        <div className="flex w-full max-w-sm flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
             <InputField
                 id="name"
                 label="Название"
@@ -80,9 +104,11 @@ export const KnobForm = ({ onSuccess, editId, initialValues }: KnobFormProps) =>
                 type="text"
                 onChange={(e) => setField("name", e.target.value)}
             />
-            <Button onClick={handleSubmit} disabled={isPending}>
-                {isPending ? "Сохранение..." : editId ? "Обновить" : "Создать"}
-            </Button>
+            {!hideButton && (
+                <Button onClick={handleSubmit} disabled={isPending}>
+                    {isPending ? "Сохранение..." : editId ? "Обновить" : "Создать"}
+                </Button>
+            )}
         </div>
     );
 };

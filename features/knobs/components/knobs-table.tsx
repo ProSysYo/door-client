@@ -3,7 +3,6 @@
 import { ColumnDef, CatalogTable } from "@/shared/components/table/catalog-table/catalog-table";
 import { Knob } from "@/entities/knobs/knobs.types";
 import { useDeleteKnob } from "@/entities/knobs/knobs.mutations";
-import { routes } from "@/config/navigation";
 
 const knobColumns: ColumnDef<Knob>[] = [
     { key: "name", label: "Название", render: (item) => item.name },
@@ -17,9 +16,10 @@ const knobColumns: ColumnDef<Knob>[] = [
 
 interface KnobsTableProps {
     data: Knob[];
+    onEdit: (knob: Knob) => void;
 }
 
-export const KnobsTable = ({ data }: KnobsTableProps) => {
+export const KnobsTable = ({ data, onEdit }: KnobsTableProps) => {
     const deleteKnob = useDeleteKnob();
 
     return (
@@ -31,7 +31,7 @@ export const KnobsTable = ({ data }: KnobsTableProps) => {
             onDelete={async (id) => {
                 await deleteKnob.mutateAsync(id);
             }}
-            getEditHref={(item) => `${routes.knobsEdit}${item.id}`}
+            onEdit={onEdit}
         />
     );
 };

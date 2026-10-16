@@ -14,8 +14,6 @@ export const routes = {
     padsEdit: "/pads/",
 
     knobs: "/knobs",
-    knobsNew: "/knobs/new",
-    knobsEdit: "/knobs/",
 
     bolts: "/bolts",
     boltsNew: "/bolts/new",

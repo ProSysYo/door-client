@@ -22,6 +22,7 @@ type Props<T> = {
     ariaLabel: string;
     onDelete?: (id: number) => Promise<void>;
     getEditHref?: (item: T) => string;
+    onEdit?: (item: T) => void;
 };
 
 function CatalogTableInner<T extends { id: number }>({
@@ -31,6 +32,7 @@ function CatalogTableInner<T extends { id: number }>({
     ariaLabel,
     onDelete,
     getEditHref,
+    onEdit,
 }: Props<T>) {
     const router = useRouter();
     const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -61,12 +63,13 @@ function CatalogTableInner<T extends { id: number }>({
     };
 
     const renderRowActions = (item: T) => {
-        if (!getEditHref || !onDelete) return null;
+        if (!onEdit && !getEditHref) return null;
 
         return (
             <RowActions
                 id={item.id}
-                editHref={getEditHref(item)}
+                editHref={getEditHref?.(item)}
+                onEdit={onEdit ? () => onEdit(item) : undefined}
                 onDelete={() => handleOpenConfirm(item.id)}
                 isLoading={deletingId === item.id}
             />
@@ -76,7 +79,7 @@ function CatalogTableInner<T extends { id: number }>({
     const hasActionsColumn = columns.some((col) => col.key === "actions");
 
     const finalColumns = [...columns];
-    if (!hasActionsColumn && (onDelete || getEditHref)) {
+    if (!hasActionsColumn && (onDelete || getEditHref || onEdit)) {
         finalColumns.push({
             key: "actions",
             label: "Действия",
