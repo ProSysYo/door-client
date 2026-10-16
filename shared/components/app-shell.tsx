@@ -1,7 +1,6 @@
 "use client";
 
-
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { routes } from "../../config/navigation";
 
@@ -14,27 +13,12 @@ type AppShellProps = {
 
 export const AppShell = ({ children }: AppShellProps) => {
     const router = useRouter();
-   
-
-    //const isAuth = status === "authenticated";
-
-    // useEffect(() => {
-    //     if (status === "unauthenticated") {
-    //         router.push(routes.login);
-    //     }
-    // }, [status, router]);
-
-    // if (!isAuth) {
-    //     return (
-    //         <main className="flex-1 overflow-y-auto p-6 h-screen">
-    //             <div className="mx-auto max-w-5xl">{children}</div>
-    //         </main>
-    //     );
-    // }
 
     return (
         <div className="flex h-screen bg-background text-foreground flex-1 ">
-            <AppSidebar />
+            <Suspense fallback={<div />}>
+                <AppSidebar />
+            </Suspense>
             <SidebarTrigger className="mt-2 ml-2" />
 
             <div className="flex flex-1 flex-col">
