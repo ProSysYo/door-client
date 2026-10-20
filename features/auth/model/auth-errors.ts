@@ -3,7 +3,6 @@ import { isAxiosError } from "axios";
 export type AuthField = "email" | "password";
 
 export type AuthErrorInfo = {
-    /** Сообщение для всей формы; пустое, когда ошибки разложены по полям. */
     message: string;
     fields: Partial<Record<AuthField, string>>;
 };
@@ -17,16 +16,11 @@ const TEXTS = {
 
 const AUTH_FIELDS: readonly string[] = ["email", "password"];
 
-/** class-validator отдаёт сообщения вида «email must be an email» — они начинаются с имени поля. */
 function fieldOf(message: string): AuthField | null {
     const [head] = message.trim().split(" ");
     return AUTH_FIELDS.includes(head) ? (head as AuthField) : null;
 }
 
-/**
- * Разворачивает ошибку авторизации в сообщения для формы.
- * Формат ответов: 401 без различимых деталей, 400 с { type } либо со { message: string[] }.
- */
 export function getAuthErrorInfo(error: unknown): AuthErrorInfo {
     if (!isAxiosError(error)) return { message: TEXTS.unavailable, fields: {} };
 
@@ -34,15 +28,12 @@ export function getAuthErrorInfo(error: unknown): AuthErrorInfo {
 
     const { status, data } = error.response;
 
-    // Пользователя нет ИЛИ пароль неверный — ответ одинаковый, угадываем бессмысленно.
     if (status === 401) return { message: TEXTS.badCredentials, fields: {} };
 
-    // 500 и прочее: тела может не быть.
     if (status >= 500) return { message: TEXTS.unavailable, fields: {} };
 
     const body = data && typeof data === "object" ? (data as Record<string, unknown>) : null;
 
-    // Единственный бизнес-код ошибки в контракте.
     if (body?.type === "email-exists") return { message: "", fields: { email: TEXTS.emailExists } };
 
     const raw = body?.message;
