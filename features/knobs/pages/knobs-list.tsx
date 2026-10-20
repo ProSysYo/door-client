@@ -1,66 +1,61 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/shared/components/shadcn/button";
-import { FormDialog } from "@/shared/components/form-dialog";
+import { ModalDialog } from "@/shared/components/modal-dialog";
 import { KnobsTable } from "../components/knobs-table";
 import { KnobForm } from "../components/knob-form";
 import { Loader } from "@/shared/components/loader";
 import { useGetKnobs } from "@/entities/knobs/knobs.queries";
 import type { Knob } from "@/entities/knobs/knobs.types";
 
-type DialogMode = { mode: "create" } | { mode: "edit"; knob: Knob } | null;
+type DialogMode = { mode: "create" } | { mode: "edit"; knob: Knob };
 
 export const KnobsList = () => {
     const { data, isLoading } = useGetKnobs();
 
-    const [dialog, setDialog] = useState<DialogMode>(null);
-    const [isPending, setIsPending] = useState(false);
-    const submitRef = useRef<(() => void) | null>(null);
+    const [dialog, setDialog] = useState<DialogMode>({ mode: "create" });
+    const [open, setOpen] = useState(false);
 
     if (isLoading) return <Loader />;
 
-    const knobs = data?.items ?? [];
-    const isEdit = dialog?.mode === "edit";
+    const editKnob = dialog.mode === "edit" ? dialog.knob : null;
 
-    const closeDialog = () => setDialog(null);
+    const openCreate = () => {
+        setDialog({ mode: "create" });
+        setOpen(true);
+    };
+
+    const openEdit = (knob: Knob) => {
+        setDialog({ mode: "edit", knob });
+        setOpen(true);
+    };
 
     return (
         <div className="container mx-auto py-8">
             <div className="mb-6 flex items-center justify-between">
                 <h1 className="text-2xl font-semibold">Ручки</h1>
-                <Button variant="default" size="lg" onClick={() => setDialog({ mode: "create" })}>
+                <Button variant="default" size="lg" onClick={openCreate}>
                     Добавить ручку
                     <Plus size={20} />
                 </Button>
             </div>
 
-            <KnobsTable
-                data={knobs}
-                onEdit={(knob) => setDialog({ mode: "edit", knob })}
-            />
+            <KnobsTable data={data || []} onEdit={openEdit} />
 
-            {/* key сбрасывает состояние формы при каждой смене режима/записи */}
-            <FormDialog
-                open={dialog !== null}
-                onOpenChange={(open) => { if (!open) closeDialog(); }}
-                title={isEdit ? "Редактировать ручку" : "Добавить ручку"}
-                description={isEdit ? "Измените данные ручки" : "Заполните данные для создания новой ручки"}
-                submitLabel={isEdit ? "Обновить" : "Создать"}
-                isPending={isPending}
-                onSubmit={() => submitRef.current?.()}
+            <ModalDialog
+                open={open}
+                onOpenChange={setOpen}
+                title={editKnob ? "Редактировать ручку" : "Добавить ручку"}
+                description={editKnob ? "Измените данные ручки" : "Заполните данные для создания новой ручки"}
             >
                 <KnobForm
-                    key={isEdit ? dialog.knob.id : "create"}
-                    editId={isEdit ? dialog.knob.id : undefined}
-                    initialValues={isEdit ? { name: dialog.knob.name } : null}
-                    onSuccess={closeDialog}
-                    hideButton
-                    submitRef={submitRef}
-                    onPendingChange={setIsPending}
+                    editId={editKnob?.id}
+                    initialValues={editKnob ? { name: editKnob.name } : null}
+                    onSuccess={() => setOpen(false)}
                 />
-            </FormDialog>
+            </ModalDialog>
         </div>
     );
 };

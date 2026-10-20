@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type MutableRefObject } from "react";
+import { useState } from "react";
 import { knobFormSchema, KnobFormValues } from "../knob-schema";
 import { useCreateKnob, useUpdateKnob } from "@/entities/knobs/knobs.mutations";
 import { Button } from "@/shared/components/shadcn/button";
@@ -12,15 +12,9 @@ interface KnobFormProps {
     onSuccess?: () => void;
     editId?: number;
     initialValues?: { name?: string } | null;
-    /** Скрыть внутреннюю кнопку — используется внутри FormDialog. */
-    hideButton?: boolean;
-    /** Родитель может вызвать submit через этот ref. */
-    submitRef?: MutableRefObject<(() => void) | null>;
-    /** Экспортирует состояние isPending наружу. */
-    onPendingChange?: (pending: boolean) => void;
 }
 
-export const KnobForm = ({ onSuccess, editId, initialValues, hideButton, submitRef, onPendingChange }: KnobFormProps) => {
+export const KnobForm = ({ onSuccess, editId, initialValues }: KnobFormProps) => {
     const isEdit = !!editId;
     const createMutation = useCreateKnob();
     const updateMutation = useUpdateKnob();
@@ -55,11 +49,6 @@ export const KnobForm = ({ onSuccess, editId, initialValues, hideButton, submitR
 
     const isPending = createMutation.isPending || updateMutation.isPending;
 
-    // Экспортируем isPending наружу для кнопки в футере диалога.
-    useEffect(() => {
-        onPendingChange?.(isPending);
-    }, [isPending, onPendingChange]);
-
     const handleSubmit = async () => {
         const data = validate();
         if (!data) return;
@@ -80,19 +69,6 @@ export const KnobForm = ({ onSuccess, editId, initialValues, hideButton, submitR
         }
     };
 
-    // Регистрируем submit в ref родителя — вызывается кнопкой в футере FormDialog.
-    const handleSubmitRef = useRef<() => Promise<void>>(handleSubmit);
-
-    useEffect(() => {
-        handleSubmitRef.current = handleSubmit;
-    });
-
-    useEffect(() => {
-        if (!submitRef) return;
-        submitRef.current = () => { void handleSubmitRef.current(); };
-        return () => { submitRef.current = null; };
-    }, [submitRef]);
-
     return (
         <div className="flex w-full flex-col gap-4">
             <InputField
@@ -104,11 +80,9 @@ export const KnobForm = ({ onSuccess, editId, initialValues, hideButton, submitR
                 type="text"
                 onChange={(e) => setField("name", e.target.value)}
             />
-            {!hideButton && (
-                <Button onClick={handleSubmit} disabled={isPending}>
-                    {isPending ? "Сохранение..." : editId ? "Обновить" : "Создать"}
-                </Button>
-            )}
+            <Button onClick={handleSubmit} disabled={isPending}>
+                {isPending ? "Сохранение..." : editId ? "Обновить" : "Создать"}
+            </Button>
         </div>
     );
 };

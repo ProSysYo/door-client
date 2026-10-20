@@ -1,5 +1,5 @@
 import axios, { isAxiosError } from "axios";
-import { env } from "@/shared/config/env";
+import { env } from "@/config/env";
 
 /**
  * Единый HTTP-клиент приложения.

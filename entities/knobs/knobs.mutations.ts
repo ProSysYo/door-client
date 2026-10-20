@@ -1,31 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { KnobsApi } from "./knobs.api";
-import { knobsKeys } from "./knobs.keys";
-import { KnobCreate } from "./knobs.types";
-import { baseApi } from "@/shared/api/base-api";
-
-const knobsApi = new KnobsApi(baseApi);
+import { createKnob, updateKnob, deleteKnob } from "./knobs.api";
+import type { KnobCreate } from "./knobs.types";
 
 export function useCreateKnob() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (data: KnobCreate) => knobsApi.createKnob(data),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: knobsKeys.all }),
+        mutationFn: (data: KnobCreate) => createKnob(data),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["knobs"] }),
     });
 }
 
 export function useUpdateKnob() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ id, data }: { id: number; data: KnobCreate }) => knobsApi.updateKnob(id, data),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: knobsKeys.all }),
+        mutationFn: ({ id, data }: { id: number; data: KnobCreate }) => updateKnob(id, data),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["knobs"] }),
     });
 }
 
 export function useDeleteKnob() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (id: number) => knobsApi.deleteKnob(id),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: knobsKeys.all }),
+        mutationFn: (id: number) => deleteKnob(id),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["knobs"] }),
     });
 }

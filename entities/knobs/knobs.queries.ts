@@ -1,23 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { KnobsApi } from "./knobs.api";
-import { knobsKeys } from "./knobs.keys";
-import { KnobFilters } from "./knobs.types";
-import { baseApi } from "@/shared/api/base-api";
+import { getKnobs, getKnob } from "./knobs.api";
 
-const knobsApi = new KnobsApi(baseApi);
-
-export function useGetKnobs(filters?: KnobFilters) {
+export function useGetKnobs() {
     return useQuery({
-        queryKey: knobsKeys.list(filters ?? {}),
-        queryFn: () => knobsApi.getKnobs(filters),
+        queryKey: ["knobs", "list"],
+        queryFn: getKnobs,
         staleTime: 1000 * 60,
     });
 }
 
 export function useGetKnob(id: number) {
     return useQuery({
-        queryKey: knobsKeys.detail(id),
-        queryFn: () => knobsApi.getKnob(id),
+        queryKey: ["knobs", "detail", id],
+        queryFn: () => getKnob(id),
         enabled: !!id,
     });
 }
