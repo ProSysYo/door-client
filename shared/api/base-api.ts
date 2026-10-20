@@ -2,6 +2,16 @@ import axios, { isAxiosError } from "axios";
 import { env } from "@/config/env";
 
 /**
+ * Единый формат ответа сервера.
+ */
+export interface ApiResponse<T> {
+    data: T | null;
+    error: string | null;
+    /** Ошибки валидации по полям: { email: ["email must be an email"] } */
+    errors: Record<string, string[]> | null;
+}
+
+/**
  * Единый HTTP-клиент приложения.
  * Сессия живёт в httpOnly-куке access-token, поэтому каждый запрос обязан
  * уходить с credentials — иначе бэкенд не увидит токен и ответит 401.
@@ -28,7 +38,12 @@ export function setUnauthorizedHandler(handler: UnauthorizedHandler | null): voi
 
 // Любой 401 означает, что сессия умерла, — глобально её чистит обработчик.
 baseApi.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        // Сервер оборачивает всё в ApiResponse — достаём поле data.
+        const apiResponse = response.data as ApiResponse<unknown>;
+        response.data = apiResponse.data;
+        return response;
+    },
     (error: unknown) => {
         if (isAxiosError(error) && error.response?.status === 401) {
             unauthorizedHandler?.();
