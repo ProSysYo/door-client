@@ -24,8 +24,6 @@ export const routes = {
     peepholesEdit: "/peepholes/",
 
     paints: "/paints",
-    paintsNew: "/paints/new",
-    paintsEdit: "/paints/",
 
     ears: "/ears",
     earsNew: "/ears/new",

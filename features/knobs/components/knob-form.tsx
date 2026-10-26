@@ -7,6 +7,7 @@ import { Button } from "@/shared/components/shadcn/button";
 import { InputField } from "@/shared/components/input-field";
 import { getApiErrorInfo } from "@/shared/api/api-error";
 import { toast } from "sonner";
+import { parseZodErrors } from "@/shared/utils/zod-utils";
 
 interface KnobFormProps {
     onSuccess?: () => void;
@@ -33,14 +34,7 @@ export const KnobForm = ({ onSuccess, editId, initialValues }: KnobFormProps) =>
     const validate = (): KnobFormValues | null => {
         const result = knobFormSchema.safeParse(values);
         if (!result.success) {
-            const fieldErrors = result.error.issues;
-            const parsed: Partial<Record<keyof KnobFormValues, string>> = {};
-            for (const issue of fieldErrors) {
-                if (issue.path[0]) {
-                    parsed[issue.path[0] as keyof KnobFormValues] = issue.message;
-                }
-            }
-            setErrors(parsed);
+            setErrors(parseZodErrors(result.error));
             return null;
         }
         setErrors({});
