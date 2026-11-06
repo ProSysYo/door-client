@@ -30,8 +30,7 @@ export const routes = {
     earsEdit: "/ears/",
 
     packagings: "/packagings",
-    packagingsNew: "/packagings/new",
-    packagingsEdit: "/packagings/",
+    
 
     jambHoles: "/jamb-holes",
     jambHolesNew: "/jamb-holes/new",

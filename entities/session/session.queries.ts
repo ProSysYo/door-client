@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { getSession } from "./session.api";
-import type { SessionState } from "./session.types";
+import { SESSION_QUERY_KEY, type SessionState } from "./session.types";
 
 export const getSessionQueryOptions = () => ({
-    queryKey: ["session", "current"],
+    queryKey: SESSION_QUERY_KEY,
     queryFn: getSession,
     retry: false,
     staleTime: Infinity,

@@ -1,3 +1,5 @@
+export const SESSION_QUERY_KEY = ["session", "current"] as const;
+
 export type SessionUser = {
     id: number;
     email: string;

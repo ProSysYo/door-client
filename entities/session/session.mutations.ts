@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { getSession, signIn, signUp, signOut } from "./session.api";
-import type { Credentials } from "./session.types";
+import { SESSION_QUERY_KEY, type Credentials } from "./session.types";
 
 export function useSignIn() {
     const queryClient = useQueryClient();
@@ -10,7 +10,7 @@ export function useSignIn() {
             await signIn(credentials);
             return getSession();
         },
-        onSuccess: (user) => queryClient.setQueryData(["session", "current"], user),
+        onSuccess: (user) => queryClient.setQueryData(SESSION_QUERY_KEY, user),
     });
 }
 
@@ -21,7 +21,7 @@ export function useSignUp() {
             await signUp(credentials);
             return getSession();
         },
-        onSuccess: (user) => queryClient.setQueryData(["session", "current"], user),
+        onSuccess: (user) => queryClient.setQueryData(SESSION_QUERY_KEY, user),
     });
 }
 
@@ -36,6 +36,6 @@ export function useSignOut() {
             }
             return null;
         },
-        onSettled: () => queryClient.setQueryData(["session", "current"], null),
+        onSettled: () => queryClient.setQueryData(SESSION_QUERY_KEY, null),
     });
 }

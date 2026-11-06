@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { routes } from "@/config/navigation";
 import { setUnauthorizedHandler } from "@/shared/api/base-api";
 import { useSessionQuery } from "@/entities/session/session.queries";
+import { SESSION_QUERY_KEY } from "@/entities/session/session.types";
 
 const AUTH_PATHS: readonly string[] = [routes.login, routes.register];
 
@@ -18,7 +19,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         setUnauthorizedHandler(() => {
-            queryClient.setQueryData(["session", "current"], null);
+            queryClient.setQueryData(SESSION_QUERY_KEY, null);
             if (!AUTH_PATHS.includes(pathname)) router.replace(routes.login);
         });
 

@@ -1,3 +1,5 @@
+export const PAINTS_QUERY_KEY = ["paints"] as const;
+
 export type PaintCreate = {
     name: string;
 };
