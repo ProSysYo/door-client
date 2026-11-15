@@ -6,63 +6,39 @@ export const routes = {
     login: "/login",
 
     locks: "/locks",
-    locksNew: "/locks/new",
-    locksEdit: "/locks/",
 
     pads: "/pads",
-    padsNew: "/pads/new",
-    padsEdit: "/pads/",
 
     knobs: "/knobs",
 
     bolts: "/bolts",
-    boltsNew: "/bolts/new",
-    boltsEdit: "/bolts/",
 
     peepholes: "/peepholes",
-    peepholesNew: "/peepholes/new",
-    peepholesEdit: "/peepholes/",
 
     paints: "/paints",
 
     ears: "/ears",
-    earsNew: "/ears/new",
-    earsEdit: "/ears/",
 
     packagings: "/packagings",
-    
 
     jambHoles: "/jamb-holes",
-    jambHolesNew: "/jamb-holes/new",
-    jambHolesEdit: "/jamb-holes/",
 
     hinges: "/hinges",
-    hingesNew: "/hinges/new",
-    hingesEdit: "/hinges/",
 
     models: "/models",
-    modelsNew: "/models/new",
-    modelsEdit: "/models/",
 
     customers: "/customers",
     customersNew: "/customers/new",
     customersEdit: "/customers/",
 
     outsideFinishes: "/outside-finishes",
-    outsideFinishesNew: "/outside-finishes/new",
-    outsideFinishesEdit: "/outside-finishes/",
 
     foils: "/foils",
-    foilsNew: "/foils/new",
-    foilsEdit: "/foils/",
 
     insideFinishes: "/inside-finishes",
-    insideFinishesNew: "/inside-finishes/new",
-    insideFinishesEdit: "/inside-finishes/",
 
     orders: "/orders",
     ordersNew: "/orders/new",
-    
 };
 
 export const navItems = [
@@ -79,7 +55,6 @@ export const navItems = [
                 href: routes.orders,
                 label: "Все заказы",
             },
-            
         ],
     },
     {
@@ -91,8 +66,6 @@ export const navItems = [
                 href: "#",
                 label: "План отгрузок",
             },
-            
-            
         ],
     },
     {
@@ -112,11 +85,9 @@ export const navItems = [
                 href: "#",
                 label: "Менеджер Отгрузки",
             },
-            
-            
         ],
     },
-     {
+    {
         title: "Статистика",
         url: "#",
         icon: ChartNoAxesCombined,
@@ -133,8 +104,6 @@ export const navItems = [
                 href: "#",
                 label: "План",
             },
-            
-            
         ],
     },
     {
@@ -142,6 +111,25 @@ export const navItems = [
         url: "#",
         icon: SquareTerminal,
         items: [
+            {
+                href: routes.packagings,
+                label: "Упаковки",
+            },
+            {
+                href: routes.knobs,
+                label: "Ручки",
+            },
+            {
+                href: routes.paints,
+                label: "Цвета покраски",
+            },
+            {
+                href: routes.foils,
+                label: "Пленки мдф",
+            },
+
+            
+
             {
                 href: routes.customers,
                 label: "Заказчики",
@@ -158,10 +146,7 @@ export const navItems = [
                 href: routes.insideFinishes,
                 label: "Отделки внутри",
             },
-            {
-                href: routes.foils,
-                label: "Пленки мдф",
-            },
+
             {
                 href: routes.locks,
                 label: "Замки",
@@ -170,10 +155,7 @@ export const navItems = [
                 href: routes.pads,
                 label: "Накладки",
             },
-            {
-                href: routes.knobs,
-                label: "Ручки",
-            },
+
             {
                 href: routes.bolts,
                 label: "Засовы",
@@ -182,18 +164,12 @@ export const navItems = [
                 href: routes.peepholes,
                 label: "Глазки",
             },
-            {
-                href: routes.paints,
-                label: "Цвета покраски",
-            },
+
             {
                 href: routes.ears,
                 label: "Уши",
             },
-            {
-                href: routes.packagings,
-                label: "Упаковки",
-            },
+
             {
                 href: routes.jambHoles,
                 label: "Отверстия в коробе",
