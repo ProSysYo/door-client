@@ -37,6 +37,7 @@ export const routes = {
 
     orders: "/orders",
     ordersNew: "/orders/new",
+    orderEdit: (id: number | string) => `/orders/${id}`,
 };
 
 export const navItems = [

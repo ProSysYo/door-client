@@ -1,5 +1,5 @@
 import React, { InputHTMLAttributes, Ref } from "react";
-import { Field, FieldDescription, FieldLabel } from "./shadcn/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "./shadcn/field";
 import { Input } from "./shadcn/input";
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -17,7 +17,7 @@ export const InputField = ({ id, label, error, description, className, ref, ...i
             {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
             <Input ref={ref} id={id} aria-invalid={!!error} {...inputProps} />
             {description && !error && <FieldDescription>{description}</FieldDescription>}
-            {error && <FieldDescription>{error}</FieldDescription>}
+            {error && <FieldError>{error}</FieldError>}
         </Field>
     );
 };

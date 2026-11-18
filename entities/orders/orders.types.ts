@@ -1,0 +1,52 @@
+export const ORDERS_QUERY_KEY = ["orders"] as const;
+
+export type OrderCreate = {
+    customerCode: string;
+    orderDate: string;
+    doorsCount: string;
+    note: string;
+    model: string;
+    leafThickness: string;
+    height: string;
+    width: string;
+    leafWidth: string;
+    leafMetalThickness: string;
+    frameMetalThickness: string;
+    frameModel: string;
+    jambHole: string;
+    ear: string;
+    hinge: string;
+    hingeSide: string;
+    hingeCount3: boolean;
+    mainLock: string;
+    mainPad: string;
+    knob: string;
+    bolt: string;
+    mainLockCylinder: string;
+    extraLock: string;
+    extraPad: string;
+    extraLockCylinder: string;
+    paint: string;
+    closerReinforcement: boolean;
+    closer: boolean;
+    outsideFinish: string;
+    outsideFoil: string;
+    insideFinish: string;
+    insideFoil: string;
+    casingFoil: string;
+    streetDoor: boolean;
+    eccentric: boolean;
+    backSheet: boolean;
+    thermalCable: boolean;
+    electromagnet: boolean;
+    lighting: boolean;
+    soundproofing: boolean;
+    packaging: string;
+    price: string;
+};
+
+export type Order = OrderCreate & {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+};

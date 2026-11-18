@@ -7,7 +7,7 @@ import {
     ComboboxItem,
     ComboboxList,
 } from "@/shared/components/shadcn/combobox";
-import { Field, FieldDescription, FieldLabel } from "@/shared/components/shadcn/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/shared/components/shadcn/field";
 
 export type ComboboxOption = {
     value: string;
@@ -74,7 +74,7 @@ export const ComboboxField = ({
             </Combobox>
 
             {description && !error && <FieldDescription>{description}</FieldDescription>}
-            {error && <FieldDescription>{error}</FieldDescription>}
+            {error && <FieldError>{error}</FieldError>}
         </Field>
     );
 };
