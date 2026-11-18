@@ -28,8 +28,6 @@ export const routes = {
     models: "/models",
 
     customers: "/customers",
-    customersNew: "/customers/new",
-    customersEdit: "/customers/",
 
     outsideFinishes: "/outside-finishes",
 
